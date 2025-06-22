@@ -1,10 +1,10 @@
-#  Screenshots – Reddit Leads Automation (n8n + Gemini)
+# 📸 Screenshots – Reddit Leads Automation (n8n + Gemini)
 
 This folder contains visuals of the complete **Reddit Leads Automation** workflow, which uses **n8n**, **LLMs (Gemini)**, and **Google Sheets** to classify and structure Reddit posts into business-usable leads — especially for rental posts like apartments/flats.
 
 ---
 
-##  Workflow Stages
+## 🧠 Workflow Stages
 
 The automation follows five main stages:
 
@@ -27,10 +27,13 @@ This screenshot shows the complete n8n flow with color-coded sections:
 - 🟫 **Data Collection**  
   - Retrieves Reddit posts based on form input  
   - Filters posts by content and freshness (recent days only)
+
 - 🟩 **Relevance Check**  
   - Uses Gemini to classify if post matches rental lead criteria
+
 - 🟦 **Agent Block**  
   - Extracts structured information from relevant posts
+
 - 🟥 **Output**  
   - Stores data into Google Sheets  
   - Deduplication is handled by URL matching
@@ -74,7 +77,7 @@ This screenshot shows the complete n8n flow with color-coded sections:
 
 ### 5️⃣ `05-agent-working.png` – LLM Extraction Agent
 
-- Activated only for relevant posts
+- Activated only for relevant posts  
 - Extracts structured lead details such as:
   - `area`
   - `budget`
@@ -87,7 +90,7 @@ This screenshot shows the complete n8n flow with color-coded sections:
 
 ### 6️⃣ `06-required-fields.png` – Assembling Final Output
 
-- Merges metadata from Reddit + extracted fields from LLM
+- Merges metadata from Reddit + extracted fields from LLM  
 - Required fields typically include:
   - `author`, `url`, `bhk`, `budget`, `area`
 - Performs final cleanup and structuring before saving to Sheets
@@ -96,8 +99,8 @@ This screenshot shows the complete n8n flow with color-coded sections:
 
 ### 7️⃣ `07-gsheet.png` – Sheet Output (Final Destination)
 
-- Relevant, cleaned data is stored in a Google Sheet
-- Each row represents one qualified lead
+- Relevant, cleaned data is stored in a Google Sheet  
+- Each row represents one qualified lead  
 - Deduplication is handled using the Reddit `url` field to avoid re-entry
 
 ---
@@ -112,22 +115,21 @@ To optimize costs and avoid unnecessary LLM calls:
   - Optional user-specific filters (e.g., location, budget, BHK)
 
 ---
-💼 Commercial Use & Custom Solutions
+
+## 💼 Commercial Use & Custom Solutions
+
 This automation workflow is perfect for:
 
-Real Estate Agencies - Automated lead generation from multiple cities
-Property Management Companies - Continuous monitoring of rental markets
-Business Development - Lead generation across various industries
-Marketing Agencies - Social media monitoring and lead extraction
+- **Real Estate Agencies** – Automated lead generation from multiple cities  
+- **Property Management Companies** – Continuous monitoring of rental markets  
+- **Business Development** – Lead generation across various industries  
+- **Marketing Agencies** – Social media monitoring and lead extraction  
 
-Need a custom solution for your business?
-Whether you need this workflow adapted for your specific use case, integrated with your existing systems, or deployed at enterprise scale, I provide consultation and custom development services.
-Contact for Business Inquiries
-<p align="center">
-  <a href="mailto:purnikparisha@gmail.com">
-    <img src="https://img.shields.io/badge/Email-Contact_Me-informational?style=for-the-badge&logo=gmail&logoColor=white&color=EA4335" alt="email button">
-  </a>
-</p>
+---
 
+## 📬 Contact for Business Inquiries
 
+Need a custom solution for your business?  
+Whether you need this workflow adapted for your specific use case, integrated with your existing systems, or deployed at enterprise scale — I provide consultation and custom development services.
 
+[![Email](https://img.shields.io/badge/Email-Contact_Me-red?style=for-the-badge&logo=gmail&logoColor=white)](mailto:purnikparisha@gmail.com)
