@@ -111,7 +111,7 @@ To optimize costs and avoid unnecessary LLM calls:
 
 - Posts are filtered based on:
   - Specific contextual keywords (e.g., `flat`, `rent`, `2bhk`)
-  - Age limit (e.g., only posts from the last 3 days)
+  - Age limit (e.g., only posts from the last  specific number of days)
   - Optional user-specific filters (e.g., location, budget, BHK)
 
 ---
