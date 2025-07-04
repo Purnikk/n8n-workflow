@@ -1,103 +1,124 @@
-# Reddit Leads Automation – For Freelancers, Startups & Small Businesses
+# Leads Automation – For Freelancers, Startups & Small Businesses
 
-This workflow scans Reddit for posts where people are **asking for help**, **looking to hire**, or **seeking services** — such as creative freelancers, startup collaborators, virtual assistants, or tool experts.
+This workflow scans Reddit (or other alert sources) for posts where people are:
 
-It combines **F5Bot**, **n8n**, **Gemini LLM**, and **Google Sheets** to turn raw Reddit alerts into **structured leads your business can act on**.
+- **Asking for help**
+- **Looking to hire**
+- **Requesting services**
 
-You can customize this to track:
-- People needing design/video/editing help ✅
-- Businesses hiring VAs or marketers ✅
-- Startup founders looking for tools/feedback ✅
-- Local service requests (e.g. posters, templates, automation help) ✅
+It combines **F5Bot or Google Alerts**, **n8n**, **Gemini LLM**, and **Google Sheets** to turn noisy keyword alerts into **structured leads your business can act on**.
 
+While this repo focuses on terms like *video editing*, *design help*, or *collaborator needed*, you can adapt it for:
 
+- Startup leads and outreach
+- Low-code automation help
+- Hiring posts (virtual assistant, marketer, dev)
+- Local service demand (e.g., slides, Canva, presentation design)
 
-F5Bot watches Reddit and emails you whenever one of those appears.  
-In this workflow, I’ve used it to track terms related to **video editing, graphic design, slides, logos, posters, etc.**
+---
+
+## 🔍 What Is F5Bot (or Google Alerts)?
+
+[F5Bot](https://f5bot.com) is a free tool that emails you whenever your chosen keywords appear on Reddit — in posts **or** comments.  
+You define keywords like:
+
+- `video editing`
+- `startup cofounder`
+- `need a designer`
+- `capcut help`
+- `hire a freelancer`
+
+Alternatively, you can use **Google Alerts** to monitor Reddit, Hacker News, or even forums — and forward those alerts into Gmail.
+
+This workflow uses **Gmail → n8n** to process those alerts and act on them.
 
 ---
 
 ## 🔥 Why I Built This
 
-Reddit has real people saying things like:
+Reddit and forums are full of genuine people saying things like:
 
-> "Looking for someone to edit my YouTube videos"  
-> "Need help creating a logo or presentation"  
-> "Any video editors open for a revenue share collab?"
+> "Looking for someone to build a landing page"  
+> "Need help creating pitch slides"  
+> "Any virtual assistants open for a part-time project?"
 
-But most posts are:
-- Self-promos ("I can edit your videos!")
-- Dead (deleted authors, removed posts)
-- Feedback threads or memes
+But most alerts are filled with:
+- Self-promos ("I offer services")
+- Deleted users
+- Off-topic or meme posts
 
 So I built this to:
-- Parse F5Bot email alerts via Gmail
-- Extract Reddit post links (post or comment)
-- Pull full Reddit content via API
-- Use a Gemini LLM to check if the post is a **genuine freelance request**
-- Store valid ones in a Google Sheet for follow-up
+- Parse Gmail alerts (F5Bot or Google)
+- Extract links (post or comment)
+- Pull full content via Reddit API
+- Use **LLM (Gemini)** to check **if it’s a real help request**
+- Store **only useful leads** in Google Sheets
 
 ---
 
 ## ⚙️ How It Works
 
-This system runs inside **n8n (Docker self-hosted)** and combines Gmail, Reddit API, LLM classification, and Sheets:
+The automation runs entirely inside **n8n (Docker self-hosted)** with custom API credentials.
 
-### 1. F5Bot → Gmail → n8n
-- F5Bot sends alerts to Gmail (label: `F5BOT`)
-- n8n fetches emails from this label
-- Extracts all Reddit links from the email HTML (handles posts & comments)
+### 1. Keyword Alerts → Gmail → n8n
+- F5Bot / Google Alerts email you about new posts
+- Gmail filters them into a label (e.g. `F5BOT`)
+- n8n fetches and parses them to extract post URLs
 
-### 2. Reddit Metadata Extraction
-- Uses Reddit API `/api/info` to fetch:
+### 2. Post Classification via API
+- Uses Reddit `/api/info` to fetch:
   - `title`, `selftext`, `author`, etc.
-- Discards:
-  - `[deleted]` authors
-  - `[removed]` or empty text
+- Filters out:
+  - `[deleted]` or `[removed]` content
+  - Empty authors or spam
 
-### 3. Classify Using Gemini
-- Sends text to **Google Gemini 2.5**
-- Response is either:
-  ```json
-  { "relevant": true } or { "relevant": false }
+### 3. Gemini 2.5 LLM Decision
+The AI checks post text and responds:
+
+```json
+{ "relevant": true } or { "relevant": false }
+```
+
 ### ✅ Classification Logic
 
 Keeps only relevant posts:
 
-- People **asking for help**
-- Mentioning tools like **CapCut, Canva, Premiere**
-- Showing clear **intent to hire**
+- Someone **asking for help**
+- Mentions tools like **Canva, CapCut, Figma**
+- Clear intent to **hire**, **collab**, or **request a service**
 
 ---
 
 ### 📤 4. Store in Google Sheets
 
-Adds a row for each valid lead with:
+Each valid post becomes a row with:
 
 - `url`
 - `keyword`
 - `author`
-- `description`
+- `description` (post content)
 
 ---
 
 ### 📊 Sample Output
 
-| URL              | Keyword        | Author           | Description                                       |
-|------------------|----------------|------------------|---------------------------------------------------|
-| [View Post](https://...) | video editing   | MilovanGlisic21   | We're a video agency hiring short-form editors... |
-| [View Post](https://...) | capcut editing  | HappyHyperCute     | Looking for a VA to help with CapCut & Canva...   |
+| URL     | Keyword        | Author             | Description                               |
+|---------|----------------|--------------------|-------------------------------------------|
+| (no link) | video editing   | MilovanGlisic21     | We're hiring short-form editors...         |
+| (no link) | capcut editing  | HappyHyperCute       | Looking for a VA to help with Canva...     |
+
+> 🔒 Links are real in production but removed here to avoid tracking/fake redirects
 
 ---
 
 ### 🧱 Tech Stack
 
-- **n8n** (Docker self-hosted)
-- **F5Bot** (Reddit keyword alerting)
-- **Gmail API** (custom OAuth2 app)
+- **n8n** (self-hosted)
+- **F5Bot or Google Alerts**
+- **Gmail API** (custom OAuth2 credentials)
 - **Reddit API** (`/api/info`)
-- **Google Gemini 2.5** (classification model)
-- **Google Sheets API** (final storage)
+- **Google Gemini 2.5** (for classification)
+- **Google Sheets API** (for storage)
 
 ---
 
@@ -107,9 +128,7 @@ Need this customized for your business niche, startup leads, or freelance outrea
 
 <div align="center">
 
-[![Email](https://img.shields.io/badge/email-purnikparisha@gmail.com-blue?style=for-the-badge&logo=gmail)](mailto:purnikparisha@gmail.com)
-&nbsp;
-[![Contact Me](https://img.shields.io/badge/CONTACT_ME-red?style=for-the-badge)](mailto:purnikparisha@gmail.com)
+[![Contact Me](https://img.shields.io/badge/CONTACT_ME-Click%20Here-red?style=for-the-badge)](mailto:purnikparisha@gmail.com)
 
 </div>
 
@@ -127,8 +146,7 @@ If you found this useful, please consider giving the repo a star!
 
 If the **"Contact Me"** button doesn’t work:
 
-- Try **right-clicking** (or long-press on mobile) and choosing **“Open in new tab”**
-- Or make sure your **default email app** (like Gmail) is properly configured
+- Try **right-clicking** (or long-pressing) and select **“Open in new tab”**
+- Or make sure your **default mail app** (like Gmail) is configured
 
-This works best on mobile or systems with a mail client set up.
-
+Works best on mobile or devices with a mail client set up.
