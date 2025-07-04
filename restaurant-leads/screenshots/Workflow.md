@@ -8,104 +8,128 @@ This workflow automates the process of identifying and capturing **potential res
 
 The system works in the following phases:
 
-1. **Dynamic Input Form** – Accepts subreddit and keyword filters
-2. **Reddit Post Fetching** – Gathers recent threads from Reddit
-3. **Relevance Classification** – Determines if the post relates to food businesses
-4. **LLM Extraction Agent** – Pulls useful fields like cuisine, location, intent
-5. **Final Structuring** – Combines all data into one clean object
+1. **Dynamic Input Form** – Accepts subreddit and keyword filters  
+2. **Reddit Post Fetching** – Gathers recent threads from Reddit  
+3. **Relevance Classification** – Determines if the post relates to food businesses  
+4. **LLM Extraction Agent** – Pulls useful fields like cuisine, location, intent  
+5. **Final Structuring** – Combines all data into one clean object  
 6. **Sheet Output** – Exports results to Google Sheets
 
 ---
 
-## 📷 Screenshot Descriptions
+## 🖼️ Screenshots & Explanations
 
-### 1️⃣ `01-workflow.png` – Full Workflow in n8n
+### 1️⃣ Full Workflow in n8n
 
-- Displays the entire pipeline
-- Modules include:
-  - Form input  
-  - Reddit puller  
-  - LLM relevance filter  
-  - Data extraction + cleanup  
-  - Google Sheets writer
+![Workflow](./screenshots/01-workflow.png)
 
----
-
-### 2️⃣ `02-testform.png` – User Input Form
-
-- Accepts:
-  - Subreddit name (e.g., `r/hyderabadfood`)  
-  - Search keywords (e.g., `restaurant`, `food truck`, `dine-in`)  
-- Makes workflow reusable across different cities or regions
+Displays the entire pipeline:
+- Form input  
+- Reddit puller  
+- LLM relevance filter  
+- Data extraction + cleanup  
+- Google Sheets writer
 
 ---
 
-### 3️⃣ `03-reddit.png` – Reddit Fetch Module
+### 2️⃣ Dynamic Input Form
 
-- Pulls fresh Reddit posts using API  
-- Extracted fields:
-  - `title`, `body`, `author`, `url`, `created_utc`  
-- Filters posts by:
-  - **Recency** (e.g., only last 3 days)
-  - **Keyword match** (`food`, `restaurant`, etc.)
+![Test Form](./screenshots/02-testform.png)
 
----
+Accepts user-defined parameters:
+- Subreddit name (e.g., `r/hyderabadfood`)  
+- Search keywords (e.g., `restaurant`, `food truck`, `dine-in`)  
 
-### 4️⃣ `04-Required fields.png` – Field Mapping Setup
-
-- Prepares structure for:
-  - `location`, `cuisine`, `budget`, `type`, and `intent`  
-- Keeps output consistent and usable in sheets or dashboards
+🔁 Makes the workflow reusable for any location or category.
 
 ---
 
-### 5️⃣ `05-relevance.png` – Relevance Classifier (Gemini)
+### 3️⃣ Reddit Post Fetch Module
 
-- Determines if a post is **relevant to small restaurant or food business owners**  
-- Analyzes post context and business intent  
-- Ignores low-quality or off-topic content
+![Reddit API](./screenshots/03-reddit.png)
 
-```json
+Pulls recent posts using Reddit API.
+
+Extracted fields:
+- `title`, `body`, `author`, `url`, `created_utc`
+
+Filters based on:
+- Recency (e.g., last 3 days)  
+- Keyword match (`food`, `restaurant`, etc.)
+
+---
+
+### 4️⃣ Required Fields Mapping
+
+![Field Structure](./screenshots/04-Required-fields.png)
+
+Prepares clean structure for:
+- `location`, `cuisine`, `budget`, `type`, `intent`
+
+Keeps output consistent and usable in spreadsheets or dashboards.
+
+---
+
+### 5️⃣ Relevance Classifier – Google Gemini
+
+![Relevance Check](./screenshots/05-relevance.png)
+
+LLM decides if a post is relevant to small restaurant or food business owners.
+
+**Example Output:**
+
 {
-  "relevant": true
+"relevant": true
 }
-```
+
+🔍 Filters out irrelevant, spammy, or unrelated posts.
 
 ---
 
-### 6️⃣ `06-agent.png` – LLM Extraction Agent
+### 6️⃣ LLM Extraction Agent
 
-- Runs only for posts marked “relevant”  
-- Extracts structured fields such as:
-  - `location`, `cuisine`, `budget`, `intent`  
-- Can be customized with different prompts depending on region or business type
+![Gemini Agent](./screenshots/06-agent.png)
 
----
+Activated only for posts marked as relevant.
 
-### 7️⃣ `07-collect fields.png` – Final Structuring
+Extracts:
+- `location`
+- `cuisine`
+- `budget`
+- `intent`
 
-- Merges:
-  - Reddit metadata (author, url, etc.)  
-  - Gemini-extracted fields  
-- Cleans and validates the final object before saving
+🧠 Prompt can be tuned for your business goals or local context.
 
 ---
 
-### 8️⃣ `08-sheet.png` – Google Sheets Output
+### 7️⃣ Final Field Collection
 
-- Each qualified lead is saved as a row in Google Sheets  
-- Deduplication is handled using the post `url`  
-- Sheet acts as a source of truth for further action
+![Merge Fields](./screenshots/07-collect-fields.png)
+
+Combines:
+- Reddit metadata (title, URL, author)  
+- Extracted fields from Gemini  
+
+Final cleanup and validation before writing to sheet.
+
+---
+
+### 8️⃣ Google Sheets Output
+
+![Sheet Output](./screenshots/08-sheet.png)
+
+- Appends each lead as a new row  
+- Ensures no duplicates using post `url`  
+- Sheet becomes a trackable lead source
 
 ---
 
 ## ⚙️ Smart Filtering Logic
 
-To reduce noise and save compute, the workflow uses:
-
-- **Post freshness filters** (e.g., last 3 days only)
-- **Contextual keywords** to find intent-heavy posts
-- **Relevance checks** that assess the post’s usefulness to real businesses
+To reduce noise and optimize LLM calls:
+- ✅ Filters posts by **date**
+- ✅ Uses keyword logic to reduce false positives
+- ✅ Gemini filters out irrelevant or spam content
 
 ---
 
@@ -113,9 +137,9 @@ To reduce noise and save compute, the workflow uses:
 
 This automation is perfect for:
 
-- 🧁 Small restaurant or café owners tracking demand or visibility  
-- 🧠 Food entrepreneurs looking for Reddit leads or insights  
-- 📢 Agencies scouting leads for restaurant clients
+- 🧁 Small restaurant or café owners tracking demand  
+- 🧠 Food entrepreneurs scouting Reddit discussions  
+- 📢 Agencies seeking leads for F&B clients
 
 ---
 
@@ -124,3 +148,4 @@ This automation is perfect for:
 Need this customized for your business niche or automated outreach?
 
 [![Email](https://img.shields.io/badge/Email-Contact_Me-red?style=for-the-badge&logo=gmail&logoColor=white)](mailto:purnikparisha@gmail.com)
+
