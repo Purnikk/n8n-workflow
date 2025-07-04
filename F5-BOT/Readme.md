@@ -1,19 +1,16 @@
-# Reddit Freelance Leads – Video Editing, Design & Creative Help
+# Reddit Leads Automation – For Freelancers, Startups & Small Businesses
 
-This workflow scans Reddit for posts where people are **looking to hire or collaborate** with freelance editors, designers, and other creatives. It uses **F5Bot**, **n8n**, **LLMs (Gemini)**, and **Google Sheets** to turn noisy Reddit alerts into **structured, outreach-ready leads**.
+This workflow scans Reddit for posts where people are **asking for help**, **looking to hire**, or **seeking services** — such as creative freelancers, startup collaborators, virtual assistants, or tool experts.
 
----
+It combines **F5Bot**, **n8n**, **Gemini LLM**, and **Google Sheets** to turn raw Reddit alerts into **structured leads your business can act on**.
 
-## 🛰️ What Is F5Bot?
+You can customize this to track:
+- People needing design/video/editing help ✅
+- Businesses hiring VAs or marketers ✅
+- Startup founders looking for tools/feedback ✅
+- Local service requests (e.g. posters, templates, automation help) ✅
 
-[F5Bot](https://f5bot.com) is a free Reddit keyword alert service that emails you when specific terms show up in Reddit posts or comments.
 
-You define keywords like:
-- `video editing`
-- `capcut help`
-- `need a designer`
-- `thumbnail feedback`
-- `hire a freelancer`
 
 F5Bot watches Reddit and emails you whenever one of those appears.  
 In this workflow, I’ve used it to track terms related to **video editing, graphic design, slides, logos, posters, etc.**
