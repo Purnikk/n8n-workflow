@@ -17,11 +17,24 @@ The system works in the following phases:
 
 ---
 
-## 📷 Screenshot Descriptions
+## 📷 Screenshots + Descriptions
 
-### 1️⃣ Full Workflow in n8n
+---
+
+### 1️⃣ Full Workflow Overview
 
 ![Workflow](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/01-workflow.png)
+
+This is the entire n8n pipeline. The workflow includes:
+
+- A form to accept subreddit + keywords  
+- A Reddit fetcher  
+- Relevance classifier (Gemini)  
+- Extraction agent  
+- Field collector  
+- Google Sheets writer
+
+This gives a bird's-eye view of the automation.
 
 ---
 
@@ -29,11 +42,27 @@ The system works in the following phases:
 
 ![Input Form](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/02-testform.png)
 
+You can input:
+
+- Subreddit name (like `r/hyderabadfood`)  
+- Search keywords (`restaurant`, `food truck`, etc.)
+
+This makes your automation flexible and reusable for different cities or niches.
+
 ---
 
 ### 3️⃣ Reddit Fetch Module
 
 ![Reddit Fetch](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/03-reddit.png)
+
+This node fetches recent Reddit posts via API and extracts:
+
+- `title`, `body`, `author`, `url`, `created_utc`
+
+It also applies filters like:
+
+- Recent posts only (e.g., last 3 days)  
+- Keyword match (e.g., `restaurant`, `dining`, etc.)
 
 ---
 
@@ -41,11 +70,28 @@ The system works in the following phases:
 
 ![Field Mapping](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/04-Required%20fields.png)
 
+This node defines the schema for final output like:
+
+- `location`, `cuisine`, `budget`, `type`, and `intent`
+
+It ensures uniform structure for storage or display.
+
 ---
 
 ### 5️⃣ Relevance Classifier (Gemini)
 
-![Relevance Classifier](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/05-relevance.png)
+![Relevance](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/05-relevance.png)
+
+This Gemini LLM node checks if the post is actually relevant for restaurant leads.
+
+It looks for:
+
+- Business-related context  
+- Intent to buy, promote, or ask about food-related services
+
+If not relevant, the post is skipped.
+
+Sample output:
 
 ```json
 {
@@ -57,44 +103,65 @@ The system works in the following phases:
 
 ### 6️⃣ LLM Extraction Agent
 
-![LLM Agent](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/06-agent.png)
+![Agent](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/06-agent.png)
+
+Only runs for relevant posts. Gemini extracts structured fields like:
+
+- `location` – area or city mentioned  
+- `cuisine` – e.g., biryani, café, Chinese  
+- `intent` – opening a restaurant, asking for suggestions  
+- `budget` – if mentioned  
+
+You can easily customize prompts for local business intelligence.
 
 ---
 
 ### 7️⃣ Final Structuring
 
-![Final Structuring](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/07-collect%20fields.png)
+![Collect Fields](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/07-collect%20fields.png)
+
+This combines:
+
+- Reddit metadata (`author`, `url`, `created_utc`)  
+- Extracted fields from Gemini  
+- Ensures everything is clean and formatted for output
 
 ---
 
 ### 8️⃣ Google Sheets Output
 
-![Google Sheets Output](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/08-sheet.png)
+![Sheet Output](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/08-sheet.png)
+
+Final structured leads are pushed into Google Sheets.
+
+- One row per lead  
+- De-duplicates using the `url`  
+- Sheet becomes your lead CRM for outreach or analysis
 
 ---
 
 ## ⚙️ Smart Filtering Logic
 
-To reduce noise and save compute, the workflow uses:
+To reduce spam and avoid unnecessary LLM usage:
 
-- **Post freshness filters** (e.g., last 3 days only)  
-- **Contextual keywords** to find intent-heavy posts  
-- **Relevance checks** that assess the post’s usefulness to real businesses
+- Filters posts by **recency** (last 3 days)  
+- Filters by **keywords** like `restaurant`, `food`, `launch`  
+- Relevance classifier ensures only business-useful content is processed
 
 ---
 
 ## 📊 Ideal Use Cases
 
-This automation is perfect for:
+This automation is built for:
 
-- 🧁 Small restaurant or café owners tracking demand or visibility  
-- 🧠 Food entrepreneurs looking for Reddit leads or insights  
-- 📢 Agencies scouting leads for restaurant clients
+- 🧁 Small restaurants or cafés tracking demand or customer intent  
+- 🧠 Food entrepreneurs scouting Reddit for product-market fit  
+- 📢 Agencies generating leads for F&B clients
 
 ---
 
 ## 📬 Contact
 
-Need this customized for your business niche or automated outreach?
+Need this customized for your own niche (e.g., salons, local tutors, freelancers)?
 
 [![Email](https://img.shields.io/badge/Email-Contact_Me-red?style=for-the-badge&logo=gmail&logoColor=white)](mailto:purnikparisha@gmail.com)
