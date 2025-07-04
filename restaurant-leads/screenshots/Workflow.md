@@ -17,119 +17,111 @@ The system works in the following phases:
 
 ---
 
-## 🖼️ Screenshots & Explanations
+## 📷 Screenshot Descriptions
 
 ### 1️⃣ Full Workflow in n8n
 
 ![Workflow](./screenshots/01-workflow.png)
 
-Displays the entire pipeline:
-- Form input  
-- Reddit puller  
-- LLM relevance filter  
-- Data extraction + cleanup  
-- Google Sheets writer
+- Displays the entire pipeline  
+- Modules include:  
+  - Form input  
+  - Reddit puller  
+  - LLM relevance filter  
+  - Data extraction + cleanup  
+  - Google Sheets writer
 
 ---
 
-### 2️⃣ Dynamic Input Form
+### 2️⃣ User Input Form
 
-![Test Form](./screenshots/02-testform.png)
+![Input Form](./screenshots/02-testform.png)
 
-Accepts user-defined parameters:
-- Subreddit name (e.g., `r/hyderabadfood`)  
-- Search keywords (e.g., `restaurant`, `food truck`, `dine-in`)  
-
-🔁 Makes the workflow reusable for any location or category.
-
----
-
-### 3️⃣ Reddit Post Fetch Module
-
-![Reddit API](./screenshots/03-reddit.png)
-
-Pulls recent posts using Reddit API.
-
-Extracted fields:
-- `title`, `body`, `author`, `url`, `created_utc`
-
-Filters based on:
-- Recency (e.g., last 3 days)  
-- Keyword match (`food`, `restaurant`, etc.)
+- Accepts:
+  - Subreddit name (e.g., `r/hyderabadfood`)  
+  - Search keywords (e.g., `restaurant`, `food truck`, `dine-in`)  
+- Makes workflow reusable across different cities or regions
 
 ---
 
-### 4️⃣ Required Fields Mapping
+### 3️⃣ Reddit Fetch Module
 
-![Field Structure](./screenshots/04-Required-fields.png)
+![Reddit Fetch](./screenshots/03-reddit.png)
 
-Prepares clean structure for:
-- `location`, `cuisine`, `budget`, `type`, `intent`
-
-Keeps output consistent and usable in spreadsheets or dashboards.
+- Pulls fresh Reddit posts using API  
+- Extracted fields:
+  - `title`, `body`, `author`, `url`, `created_utc`  
+- Filters posts by:
+  - **Recency** (e.g., only last 3 days)  
+  - **Keyword match** (`food`, `restaurant`, etc.)
 
 ---
 
-### 5️⃣ Relevance Classifier – Google Gemini
+### 4️⃣ Field Mapping Setup
 
-![Relevance Check](./screenshots/05-relevance.png)
+![Field Mapping](./screenshots/04-Required-fields.png)
 
-LLM decides if a post is relevant to small restaurant or food business owners.
+- Prepares structure for:
+  - `location`, `cuisine`, `budget`, `type`, and `intent`  
+- Keeps output consistent and usable in sheets or dashboards
 
-**Example Output:**
+---
 
+### 5️⃣ Relevance Classifier (Gemini)
+
+![Relevance Classifier](./screenshots/05-relevance.png)
+
+- Determines if a post is **relevant to small restaurant or food business owners**  
+- Analyzes post context and business intent  
+- Ignores low-quality or off-topic content
+
+```json
 {
-"relevant": true
+  "relevant": true
 }
-
-🔍 Filters out irrelevant, spammy, or unrelated posts.
+```
 
 ---
 
 ### 6️⃣ LLM Extraction Agent
 
-![Gemini Agent](./screenshots/06-agent.png)
+![LLM Agent](./screenshots/06-agent.png)
 
-Activated only for posts marked as relevant.
-
-Extracts:
-- `location`
-- `cuisine`
-- `budget`
-- `intent`
-
-🧠 Prompt can be tuned for your business goals or local context.
+- Runs only for posts marked “relevant”  
+- Extracts structured fields such as:
+  - `location`, `cuisine`, `budget`, `intent`  
+- Can be customized with different prompts depending on region or business type
 
 ---
 
-### 7️⃣ Final Field Collection
+### 7️⃣ Final Structuring
 
-![Merge Fields](./screenshots/07-collect-fields.png)
+![Final Structuring](./screenshots/07-collect-fields.png)
 
-Combines:
-- Reddit metadata (title, URL, author)  
-- Extracted fields from Gemini  
-
-Final cleanup and validation before writing to sheet.
+- Merges:
+  - Reddit metadata (author, url, etc.)  
+  - Gemini-extracted fields  
+- Cleans and validates the final object before saving
 
 ---
 
 ### 8️⃣ Google Sheets Output
 
-![Sheet Output](./screenshots/08-sheet.png)
+![Google Sheets Output](./screenshots/08-sheet.png)
 
-- Appends each lead as a new row  
-- Ensures no duplicates using post `url`  
-- Sheet becomes a trackable lead source
+- Each qualified lead is saved as a row in Google Sheets  
+- Deduplication is handled using the post `url`  
+- Sheet acts as a source of truth for further action
 
 ---
 
 ## ⚙️ Smart Filtering Logic
 
-To reduce noise and optimize LLM calls:
-- ✅ Filters posts by **date**
-- ✅ Uses keyword logic to reduce false positives
-- ✅ Gemini filters out irrelevant or spam content
+To reduce noise and save compute, the workflow uses:
+
+- **Post freshness filters** (e.g., last 3 days only)  
+- **Contextual keywords** to find intent-heavy posts  
+- **Relevance checks** that assess the post’s usefulness to real businesses
 
 ---
 
@@ -137,9 +129,9 @@ To reduce noise and optimize LLM calls:
 
 This automation is perfect for:
 
-- 🧁 Small restaurant or café owners tracking demand  
-- 🧠 Food entrepreneurs scouting Reddit discussions  
-- 📢 Agencies seeking leads for F&B clients
+- 🧁 Small restaurant or café owners tracking demand or visibility  
+- 🧠 Food entrepreneurs looking for Reddit leads or insights  
+- 📢 Agencies scouting leads for restaurant clients
 
 ---
 
@@ -148,4 +140,3 @@ This automation is perfect for:
 Need this customized for your business niche or automated outreach?
 
 [![Email](https://img.shields.io/badge/Email-Contact_Me-red?style=for-the-badge&logo=gmail&logoColor=white)](mailto:purnikparisha@gmail.com)
-
