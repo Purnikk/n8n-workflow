@@ -21,7 +21,7 @@ The system works in the following phases:
 
 ### 1️⃣ Full Workflow in n8n
 
-![Workflow](./screenshots/01-workflow.png)
+![Workflow](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/01-workflow.png)
 
 - Displays the entire pipeline  
 - Modules include:  
@@ -35,7 +35,7 @@ The system works in the following phases:
 
 ### 2️⃣ User Input Form
 
-![Input Form](./screenshots/02-testform.png)
+![Input Form](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/02-testform.png)
 
 - Accepts:
   - Subreddit name (e.g., `r/hyderabadfood`)  
@@ -46,7 +46,7 @@ The system works in the following phases:
 
 ### 3️⃣ Reddit Fetch Module
 
-![Reddit Fetch](./screenshots/03-reddit.png)
+![Reddit Fetch](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/03-reddit.png)
 
 - Pulls fresh Reddit posts using API  
 - Extracted fields:
@@ -59,7 +59,7 @@ The system works in the following phases:
 
 ### 4️⃣ Field Mapping Setup
 
-![Field Mapping](./screenshots/04-Required-fields.png)
+![Field Mapping](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/04-Required-fields.png)
 
 - Prepares structure for:
   - `location`, `cuisine`, `budget`, `type`, and `intent`  
@@ -69,7 +69,7 @@ The system works in the following phases:
 
 ### 5️⃣ Relevance Classifier (Gemini)
 
-![Relevance Classifier](./screenshots/05-relevance.png)
+![Relevance Classifier](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/05-relevance.png)
 
 - Determines if a post is **relevant to small restaurant or food business owners**  
 - Analyzes post context and business intent  
@@ -85,7 +85,7 @@ The system works in the following phases:
 
 ### 6️⃣ LLM Extraction Agent
 
-![LLM Agent](./screenshots/06-agent.png)
+![LLM Agent](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/06-agent.png)
 
 - Runs only for posts marked “relevant”  
 - Extracts structured fields such as:
@@ -96,7 +96,7 @@ The system works in the following phases:
 
 ### 7️⃣ Final Structuring
 
-![Final Structuring](./screenshots/07-collect-fields.png)
+![Final Structuring](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/07-collect-fields.png)
 
 - Merges:
   - Reddit metadata (author, url, etc.)  
@@ -107,7 +107,7 @@ The system works in the following phases:
 
 ### 8️⃣ Google Sheets Output
 
-![Google Sheets Output](./screenshots/08-sheet.png)
+![Google Sheets Output](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/restaurant-leads/screenshots/08-sheet.png)
 
 - Each qualified lead is saved as a row in Google Sheets  
 - Deduplication is handled using the post `url`  
