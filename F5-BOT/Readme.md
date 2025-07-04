@@ -100,14 +100,11 @@ Each valid post becomes a row with:
 
 ---
 
-### 📊 Sample Output
+| 🔘 View | 🗝️ Keyword       | 👤 Author           | 📝 Description                                |
+|--------|------------------|---------------------|-----------------------------------------------|
+| [View Post](#) | video editing     | MilovanGlisic21     | We're hiring short-form editors...            |
+| [View Post](#) | capcut editing    | HappyHyperCute       | Looking for a VA to help with Canva + CapCut  |
 
-| URL     | Keyword        | Author             | Description                               |
-|---------|----------------|--------------------|-------------------------------------------|
-| (no link) | video editing   | MilovanGlisic21     | We're hiring short-form editors...         |
-| (no link) | capcut editing  | HappyHyperCute       | Looking for a VA to help with Canva...     |
-
-> 🔒 Links are real in production but removed here to avoid tracking/fake redirects
 
 ---
 
