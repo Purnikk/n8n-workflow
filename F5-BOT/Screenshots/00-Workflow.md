@@ -6,7 +6,7 @@ It’s perfect for:
 
 - 🚀 Startup founders looking for users asking about their space  
 - 💼 Freelancers monitoring niche demand  
-- 🔍 Indie hackers spotting users describing problems you solve
+- 🔍 Indie hackers spotting users describing problems you solve  
 
 ---
 
@@ -19,95 +19,80 @@ It’s perfect for:
 5. **Merge Post Logic** – Choose best description (body > title)  
 6. **Relevance Classifier** – Use Gemini to detect valuable signals  
 7. **Final Field Output** – Extract author, keyword, description, and URL  
-8. **Google Sheet Logging** – Deduplicated lead archive
+8. **Google Sheet Logging** – Deduplicated lead archive  
 
 ---
 
-## 📷 Screenshots + Explanations
+## 📷 Screenshots + Descriptions
 
 ---
 
 ### 1️⃣ Full Workflow Overview
 
-![Workflow](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/keyword-leads/screenshots/01-Work-flow.png)
+![Workflow](https://github.com/Purnikk/n8n-workflow/blob/main/F5-BOT/Screenshots/01-Work-flow.png?raw=true)
 
-Shows the complete n8n pipeline — from Gmail fetch, parsing and Gemini LLM, to final output in Sheets. A modular, readable, and production-grade automation.
+This is the full n8n pipeline showing all the steps from Gmail fetch to Gemini LLM filtering and Google Sheets output. It’s clean, logical, and modular.
 
 ---
 
 ### 2️⃣ F5Bot Email Label (Gmail)
 
-![Label](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/keyword-leads/screenshots/02-label-mail.png)
+![Label](https://github.com/Purnikk/n8n-workflow/blob/main/F5-BOT/Screenshots/02-label-mail.png?raw=true)
 
-Once F5Bot is configured with your keywords, emails start coming in like:
-
-- "Keyword: `notion` found in Reddit comment…"  
-- "Keyword: `freelance` found in Hacker News thread…"
+Once [F5Bot](https://f5bot.com) is set up with keywords like `Notion`, `freelance`, `time tracking`, etc., it emails you whenever these terms show up.
 
 ✅ In Gmail:
-- Create a **label** like `keyword-leads`  
-- Use a filter rule:  
-  - If `From: alert@f5bot.com`  
-  - Apply label `keyword-leads`
-
-This makes your n8n flow focus only on relevant alerts.
+- Create a filter for `From: alert@f5bot.com`  
+- Apply the label `keyword-leads`  
+This label will be used in the Gmail node inside n8n.
 
 ---
 
 ### 3️⃣ Gmail Node – n8n Fetch
 
-![Gmail](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/keyword-leads/screenshots/03-mail-node.png)
+![Gmail](https://github.com/Purnikk/n8n-workflow/blob/main/F5-BOT/Screenshots/03-mail-node.png?raw=true)
 
-Pulls recent labeled mails (F5Bot alerts) via OAuth Gmail API.
+This Gmail node fetches emails labeled `keyword-leads`. It:
 
-- Use the `Get Many` toggle to pull multiple threads  
-- Filters by label (`keyword-leads`)  
-- These mails contain:
-  - Keywords  
-  - Snippets  
-  - Multiple redirect links (some irrelevant)
+- Pulls multiple emails using `Get Many`  
+- Extracts content from each F5Bot alert  
+- These contain both the keyword trigger + raw links (some ads/redirects)
 
 ---
 
 ### 4️⃣ API Metadata Fetch
 
-![API](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/keyword-leads/screenshots/04-api.png)
+![API](https://github.com/Purnikk/n8n-workflow/blob/main/F5-BOT/Screenshots/04-api.png?raw=true)
 
-We extract clean **Reddit links** from the HTML and fetch the **post metadata** using Reddit API.
+Once clean Reddit URLs are extracted, the Reddit API is called using the `post_id` or `comment_id`.  
+It returns structured data like:
 
-- Inputs:
-  - Extracted `post_id` or `comment_id`
-- Output includes:
-  - `title`  
-  - `selftext`  
-  - `author`  
-  - Other meta fields (`children`, etc.)
-
-This gives **structured data** beyond what F5Bot email provides.
+- `title`  
+- `selftext`  
+- `author`  
+- Nested fields like `children` (comment structure)
 
 ---
 
 ### 5️⃣ Merge Logic – Body or Title
 
-![Merge](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/keyword-leads/screenshots/05-merge.png)
+![Merge](https://github.com/Purnikk/n8n-workflow/blob/main/F5-BOT/Screenshots/05-merge.png?raw=true)
 
-Not all Reddit posts have body text. This logic ensures:
+This step ensures useful context for filtering:
 
-- If `selftext` exists → use as `description`  
-- Else, fallback to `title`  
-- Posts with no useful text are skipped
+- If `selftext` exists → it's used as description  
+- Else → fallback to the post `title`  
+Some posts only have a title, which may still be valuable.
 
-💡 This merged field becomes **input to Gemini LLM** for filtering.
+This merged field is what we send to Gemini next.
 
 ---
 
 ### 6️⃣ Gemini LLM Classifier
 
-![Gemini](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/keyword-leads/screenshots/06-agent.png)
+![Gemini](https://github.com/Purnikk/n8n-workflow/blob/main/F5-BOT/Screenshots/06-agent.png?raw=true)
 
-This block determines **whether the post is contextually relevant**.
-
-Gemini looks at the merged description and answers:
+Gemini reviews the merged content and returns:
 
 ```json
 {
@@ -115,114 +100,87 @@ Gemini looks at the merged description and answers:
 }
 ```
 
-It flags content like:
+Only relevant leads move forward. This step filters out:
 
-- 🧠 "Looking for time tracking tools"  
-- 💬 "Can someone recommend X?"  
-- 😭 "I'm struggling with Notion or Zapier"  
-
-…and ignores:
-
-- 😐 Off-topic remarks  
-- 🙈 Joke/meme replies  
-- 💸 Self-promos or junk links
+- Spam  
+- Low-quality or off-topic posts  
+- Link dumps or joke replies
 
 ---
 
 ### 7️⃣ Field Collector (Set Node)
 
-![Set](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/keyword-leads/screenshots/07-collect-fields.png)
+![Set](https://github.com/Purnikk/n8n-workflow/blob/main/F5-BOT/Screenshots/07-collect-fields.png?raw=true)
 
-For every relevant post:
+Here we create the final lead structure, including:
 
 - `reddit_url`  
-- `keyword` matched  
-- `description` (body or title)  
-- `author`  
-are compiled into a final lead object.
+- `description`  
+- `keyword` (triggered word)  
+- `author`
 
-You can customize this further if you want extra fields like subreddit or flair.
+This is what’s logged into the spreadsheet.
 
 ---
 
 ### 8️⃣ Google Sheets Output
 
-![Sheets](https://raw.githubusercontent.com/Purnikk/n8n-workflow/main/keyword-leads/screenshots/08-g-sheets.png)
+![Sheets](https://github.com/Purnikk/n8n-workflow/blob/main/F5-BOT/Screenshots/08-g-sheets.png?raw=true)
 
-Each qualified lead becomes a **row in Google Sheets**.
+Each relevant lead is saved into Google Sheets.
 
-✅ Features:
-
-- One row per post  
-- `url` is used for **deduplication**  
-- Sheet becomes your CRM-lite system for:
-  - Outreach  
-  - Trend analysis  
-  - Tagging leads  
+✅ De-duplication is handled using the `url`  
+✅ Sheet becomes a live list of opportunities, questions, or discussions around your niche
 
 ---
 
-## ⚙️ Filter Logic
+## ⚙️ Smart Filtering Logic
 
-To avoid junk and save LLM credits:
-
-- ❌ Emails without Reddit links are dropped  
-- ✅ Only Reddit posts (not ads or nav links) are parsed  
-- ✅ Author must not be `[deleted]`  
-- ✅ Posts must have some useful context (body/title)  
-
-This ensures high-signal, low-noise results.
+- Gmail filter limits emails to only F5Bot alerts  
+- HTML parsing removes redirect or ad links  
+- Reddit API ensures we only process posts by real (not deleted) authors  
+- Gemini confirms whether it's worth tracking
 
 ---
 
 ## 📊 Ideal Use Cases
 
-- 🧠 **Solopreneurs** — Spot people asking for what you built  
-- 💼 **Agencies** — Monitor leads for services like design/dev/AI  
-- 🧪 **Startups** — Product discovery, early demand mapping  
-- 🔍 **Researchers** — Track topic mentions across Reddit/HN
+- 🧠 **Solopreneurs** – Spot people asking for tools you’ve built  
+- 💼 **Agencies** – Find potential clients expressing needs  
+- 🧪 **Startups** – Watch for demand signals in real time  
+- 🔍 **Researchers** – Monitor social platform chatter around a niche  
 
 ---
 
 ## ❓ FAQs
 
-### Can this work for Hacker News too?
-Yes — [F5Bot](https://f5bot.com) supports Hacker News. The email format is similar and works seamlessly.
+**Can this monitor Hacker News too?**  
+Yes. F5Bot supports both Reddit and Hacker News keywords.
 
-### Can I run this hourly?
-Yes. You can add a Cron node or trigger this flow using webhook or schedule.
+**Can I run this every hour?**  
+Absolutely. Use Cron or a webhook trigger in n8n.
 
-### Can I use Outlook instead of Gmail?
-If you can fetch email with label/filter or via IMAP/OAuth, yes — but Gmail is easiest in n8n.
+**Does it work with Outlook?**  
+Not directly. Gmail works best with OAuth and label-based filtering.
 
-### Are duplicates prevented?
-Yes. Google Sheets node uses the Reddit `url` as a **match column**, so no repeated entries.
+**How are duplicates avoided?**  
+The Google Sheets node checks existing entries by `url`.
 
-### How many emails can I fetch?
-Gmail API supports batching. Use the "Get Many" toggle in n8n to pull multiple mails at once.
-
----
-
-## 🛠️ Get Started
-
-1. 🔍 Add keywords at [F5Bot.com](https://f5bot.com)  
-2. 📥 Wait for alert emails  
-3. 🏷️ Set Gmail filter → label = `keyword-leads`  
-4. 🔄 Run your n8n flow (manual or scheduled)  
-5. 📄 Log qualified leads in Google Sheets
+**Can I track multiple keywords?**  
+Yes — just add them to your F5Bot dashboard. Each mention becomes a new email.
 
 ---
 
-## 🌟 Support This Project
+## 🌟 Like This Automation?
 
-If this automation helped you find useful leads or save time, **give the repo a star**:
+If this helped you capture leads or monitor demand — consider giving this repo a ⭐
 
-[⭐ Star the GitHub Repo](https://github.com/Purnikk/n8n-workflow)
+[⭐ Star on GitHub](https://github.com/Purnikk/n8n-workflow)
 
 ---
 
-## 📬 Contact for Customization
+## 📬 Contact for Custom Workflows
 
-Want this workflow extended to outbound DM, Airtable, CRMs, or Discord?
+Want this flow extended to Discord, Airtable, CRM, or auto-DMs?
 
 [![Email](https://img.shields.io/badge/Email-Contact_Me-red?style=for-the-badge&logo=gmail&logoColor=white)](mailto:purnikparisha@gmail.com)
